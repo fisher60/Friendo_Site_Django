@@ -13,6 +13,8 @@ WORKDIR /code
 
 RUN pipenv install --system --deploy
 
-RUN python3 manage.py migrate
+WORKDIR /code/friendo_site
 
-ENTRYPOINT ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+#RUN python3 manage.py migrate
+
+ENTRYPOINT ["bash"]

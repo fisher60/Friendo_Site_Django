@@ -1,0 +1,38 @@
+# Local dev environment
+
+version: "3.8"
+services:
+  # Database
+  db:
+    image: postgres:12
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+    ports:
+    - "5432"
+
+  friendo_site:
+    build:
+      target: friendo_site_dev
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    command: -c "python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000"
+
+    environment:
+      - DEBUG=TRUE
+      - DJANGO_SECRET_KEY=NotSecretDontUseInProduction
+      - POSTGRES_DB=postgres
+      - POSTGRES_HOST=db
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+    restart: "no"
+    volumes:
+      - .:/code
+
+volumes:
+  postgres_data:
