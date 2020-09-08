@@ -15,6 +15,4 @@ RUN pipenv install --system --deploy
 
 WORKDIR /code/friendo_site
 
-#RUN python3 manage.py migrate
-
 ENTRYPOINT ["bash"]
