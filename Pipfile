@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 django = "*"
 psycopg2 = "*"
+ariadne = "*"
 
 [requires]
 python_version = "3.8"
