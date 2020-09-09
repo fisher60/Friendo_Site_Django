@@ -4,6 +4,7 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.handlers.wsgi import WSGIRequest
 
 
 class User(AbstractUser):
@@ -67,3 +68,26 @@ class AuthToken(Token):
             payload, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM
         )
         self.token = encode_token
+
+
+def token_required(func):
+    def inner(*args, **kwargs):
+        _, info, *__ = args
+        context = info.context.get("request", None)
+        if context:
+            headers = context.headers
+            try:
+                authorization = headers["Authorization"]
+            except KeyError:
+                raise ValueError("Authorization not provided.")
+            authorization = authorization.split()
+            if authorization[0] == "Bearer":
+                if len(authorization) == 2:
+                    token = authorization[1]
+                else:
+                    raise ValueError("Auth type or Token missing")
+            else:
+                raise ValueError("Invalid Auth type")
+        return func(*args, **kwargs)
+
+    return inner

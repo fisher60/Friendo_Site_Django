@@ -3,3 +3,14 @@ type User{
     username: String!
     bot_admin: Boolean!
 }
+
+input LoginInput {
+    username: String!
+    password: String!
+}
+
+type LoginPayload {
+    status: Boolean!
+    error: String
+    token: String
+}
