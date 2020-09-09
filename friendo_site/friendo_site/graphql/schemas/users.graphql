@@ -1,4 +1,5 @@
 type User{
     id: Int!
     username: String!
+    bot_admin: Boolean!
 }
