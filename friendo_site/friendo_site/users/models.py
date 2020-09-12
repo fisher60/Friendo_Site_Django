@@ -4,11 +4,38 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.core.handlers.wsgi import WSGIRequest
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 
 
 class User(AbstractUser):
     bot_admin = models.BooleanField(default=False)
+
+    def clear_tokens(self):
+        """
+        Delete all existing AuthTokens the user has.
+        :return: None
+        """
+        auth_tokens = self.authtoken_set.all()
+        # if user has existing tokens, delete them all
+        if auth_tokens:
+            for token in auth_tokens:
+                token.delete()
+
+    def generate_token(self):
+        """
+        creates a new token for the current user
+        :return: AuthToken
+        """
+        auth_token = AuthToken(user=self)
+        auth_token.set_expiration()
+        auth_token.encode_token()
+
+        # clear previous tokens before saving
+        self.clear_tokens()
+
+        auth_token.save()
+
+        return auth_token
 
 
 class Token(models.Model):
@@ -36,6 +63,9 @@ class Token(models.Model):
 
 
 class AuthToken(Token):
+    def __str__(self):
+        return f"{self.user.username} || {self.token[-5:-1]}"
+
     @staticmethod
     def get_expiration() -> datetime:
         """Calculate the expiration time for Auth Token"""
@@ -69,25 +99,81 @@ class AuthToken(Token):
         )
         self.token = encode_token
 
+    def validate_token(self):
+        """
+        Validates whether this token is valid based on expiration time and current time
+        :return: True if token is valid else false
+        """
+        return datetime.now() < self.expiration
+
+
+def token_auth(info):
+    """
+    Attempts to get an authorization token from the request headers,
+    then authenticates the request if the token is valid and belongs to a user.
+
+    :param info: all of the information from the request/args[1]
+    :return: True if token is valid else False or raise the appropriate error
+    """
+
+    context = info.context.get("request", None)
+    if context:
+        headers = context.headers
+
+        try:
+            authorization = headers["Authorization"]
+        except KeyError:
+            raise PermissionDenied("Authorization not provided.")
+
+        authorization = authorization.split()
+
+        # check auth type
+        if authorization[0] == "Bearer":
+
+            # check that there are two args, auth type and token
+            if len(authorization) == 2:
+                token = authorization[1]
+
+                # get token or set it to None
+                try:
+                    token_confirm = AuthToken.objects.get(token=token)
+                except ObjectDoesNotExist:
+                    token_confirm = None
+
+                # token exists
+                if token_confirm:
+                    return True
+                else:
+                    raise PermissionDenied("Invalid Token")
+
+            # Too few or too many args in Authorization
+            else:
+                raise ValueError("Auth type or Token missing/invalid")
+
+        # Authorization was not not "Bearer"
+        else:
+            raise ValueError("Invalid Auth type")
+
+    return False
+
 
 def token_required(func):
+    """
+    Decorator wrapper to require token authentication for a specific request.
+
+    :param func: the original function that invoked this decorator.
+    :return: the orginal function with args and kwargs if the token was authorized, else raise permission error
+    """
+
     def inner(*args, **kwargs):
         _, info, *__ = args
-        context = info.context.get("request", None)
-        if context:
-            headers = context.headers
-            try:
-                authorization = headers["Authorization"]
-            except KeyError:
-                raise ValueError("Authorization not provided.")
-            authorization = authorization.split()
-            if authorization[0] == "Bearer":
-                if len(authorization) == 2:
-                    token = authorization[1]
-                else:
-                    raise ValueError("Auth type or Token missing")
-            else:
-                raise ValueError("Invalid Auth type")
-        return func(*args, **kwargs)
+
+        # Request and token valid
+        if token_auth(info):
+            return func(*args, **kwargs)
+
+        # Invalid request, authorization, or token
+        else:
+            raise PermissionDenied("Token Auth Failed")
 
     return inner

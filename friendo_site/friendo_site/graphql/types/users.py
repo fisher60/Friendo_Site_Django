@@ -1,6 +1,5 @@
 from ariadne import ObjectType
 from django.contrib.auth import authenticate, login
-from friendo_site.users.models import AuthToken, User
 
 user = ObjectType("User")
 
@@ -8,12 +7,7 @@ user = ObjectType("User")
 def generate_user_auth_token(user=None):
     if user is None:
         raise ValueError("User cannot be None.")
-
-    auth_token = AuthToken(user=user)
-    auth_token.set_expiration()
-    auth_token.encode_token()
-    auth_token.save()
-    return auth_token
+    return user.generate_token()
 
 
 def resolve_login(_, info, data):
