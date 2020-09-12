@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import os
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -129,3 +130,7 @@ STATIC_URL = "/static/"
 
 # Custom user model
 AUTH_USER_MODEL = "users.User"
+
+# JWT Tokens
+JWT_ALGORITHM = "HS256"
+JWT_AUTH_TOKEN_DELTA = timedelta(days=30)
