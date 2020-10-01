@@ -38,6 +38,14 @@ class User(AbstractUser):
         return auth_token
 
 
+class Currency(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    amount = models.IntegerField(default=97)
+
+    def __str__(self):
+        return "Chad Bucks"
+
+
 class Token(models.Model):
     """Abstract token model"""
 
