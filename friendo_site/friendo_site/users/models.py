@@ -104,7 +104,7 @@ class AuthToken(Token):
         }
         encode_token = jwt.encode(
             payload, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM
-        )
+        ).decode("utf-8")
         self.token = encode_token
 
     def validate_token(self):
@@ -113,6 +113,20 @@ class AuthToken(Token):
         :return: True if token is valid else false
         """
         return datetime.now() < self.expiration
+
+
+def validate_token(token: str) -> bool:
+    payload = jwt.decode(
+        token, settings.SECRET_KEY, algorithms=[settings.JWT_ALGORITHM]
+    )
+    try:
+        expiration_time = payload["exp"]
+        if datetime.now() < datetime.fromtimestamp(expiration_time):
+            return True
+        else:
+            raise PermissionDenied("Token expired")
+    except KeyError:
+        raise PermissionDenied("Token could not be validated.")
 
 
 def token_auth(info):
@@ -142,11 +156,8 @@ def token_auth(info):
             if len(authorization) == 2:
                 token = authorization[1]
 
-                # get token or set it to None
-                try:
-                    token_confirm = AuthToken.objects.get(token=token)
-                except ObjectDoesNotExist:
-                    token_confirm = None
+                # check if token is valid
+                token_confirm = validate_token(token)
 
                 # token exists
                 if token_confirm:
