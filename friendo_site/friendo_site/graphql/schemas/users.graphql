@@ -2,11 +2,17 @@ type User{
     id: Int!
     username: String!
     bot_admin: Boolean!
+    notes: [String!]
 }
 
 input LoginInput {
     username: String!
     password: String!
+}
+
+input GetUserInput {
+    username: String
+    discord_id: String
 }
 
 type LoginPayload {

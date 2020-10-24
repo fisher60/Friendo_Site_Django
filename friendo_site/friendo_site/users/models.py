@@ -8,7 +8,14 @@ from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 
 
 class User(AbstractUser):
+    """Custom user class, contains django backend as well as discord data for users."""
+
     bot_admin = models.BooleanField(default=False)
+    discord_id = models.CharField(max_length=18, null=True)
+
+    @property
+    def notes(self):
+        return [x.content for x in self.note_set.all()]
 
     def clear_tokens(self):
         """
@@ -36,6 +43,14 @@ class User(AbstractUser):
         auth_token.save()
 
         return auth_token
+
+
+class Note(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f"{self.user.username} || {self.id}"
 
 
 class Currency(models.Model):
