@@ -16,7 +16,7 @@ services:
 
   friendo_site:
     build:
-      target: friendo_site_dev
+      target: friendo_site
     ports:
       - 8000:8000
     depends_on:
