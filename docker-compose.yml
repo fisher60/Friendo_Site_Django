@@ -6,7 +6,7 @@ services:
     build:
       context: .
     environment:
-      - Debug
+      - DEBUG
       - DJANGO_SECRET_KEY
       - POSTGRES_DB
       - POSTGRES_HOST
