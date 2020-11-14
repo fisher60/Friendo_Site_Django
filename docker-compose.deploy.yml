@@ -7,7 +7,7 @@ services:
       target: friendo_site
     ports:
       - 8001:8001
-    command: -c "python3 manage.py migrate && python3 gunicorn -b 0.0.0.0:8001 friendo_site/wsgi.py"
+    command: -c "python3 manage.py migrate && gunicorn -b 0.0.0.0:8001 friendo_site/wsgi.py"
     restart: "no"
     volumes:
       - .:/code
