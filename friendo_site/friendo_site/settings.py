@@ -28,6 +28,9 @@ DEBUG = bool(os.environ.get("DEBUG", False))
 
 ALLOWED_HOSTS = []
 
+for host in os.environ.get("ALLOWED_HOSTS").split(" "):
+    ALLOWED_HOSTS.append(host)
+
 ALLOWED_HOSTS.append(os.environ.get("DEBUG_HOST"))
 
 # Application definition
