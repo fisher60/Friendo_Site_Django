@@ -1,0 +1,4 @@
+type Mutation {
+    login(data: LoginInput!): LoginPayload
+    user(data: GetUserInput!): User
+}
