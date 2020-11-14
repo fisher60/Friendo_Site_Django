@@ -8,6 +8,7 @@ services:
     environment:
       - DEBUG
       - DJANGO_SECRET_KEY
+      - ALLOWED_HOSTS
       - POSTGRES_DB
       - POSTGRES_HOST
       - POSTGRES_PASSWORD
