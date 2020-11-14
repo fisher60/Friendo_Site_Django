@@ -11,7 +11,3 @@ services:
     restart: "no"
     volumes:
       - .:/code
-      - static:/var/www/html/friendo/static
-volumes:
-  static:
-    external: true
