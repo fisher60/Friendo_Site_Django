@@ -29,6 +29,8 @@ DEBUG = os.environ.get("DJANGO_SECRET_KEY", None)
 
 ALLOWED_HOSTS = []
 
+if DEBUG:
+    ALLOWED_HOSTS.append(os.environ.get("DEBUG_HOST"))
 
 # Application definition
 

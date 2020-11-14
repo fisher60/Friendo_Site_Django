@@ -12,3 +12,4 @@ services:
       - POSTGRES_HOST
       - POSTGRES_PASSWORD
       - POSTGRES_USER
+      - DEBUG_HOST=localhost
