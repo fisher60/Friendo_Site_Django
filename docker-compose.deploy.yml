@@ -11,4 +11,4 @@ services:
     restart: "no"
     volumes:
       - .:/code
-      - /static:/var/www/html/friendo.com/static
+      - /var/www/html/friendo.com/static:/static
