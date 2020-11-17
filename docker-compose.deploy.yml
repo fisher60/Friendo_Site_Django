@@ -7,8 +7,7 @@ services:
       target: friendo_site
     ports:
       - 8001:8001
-    command: -c "python3 manage.py migrate && gunicorn -b 0.0.0.0:8001 friendo_site.wsgi"
+    command: -c "python3 manage.py migrate && python manage.py collectstatic --no-input && cp -r /code/static /var/www/html/friendo.com/static && gunicorn -b 0.0.0.0:8001 friendo_site.wsgi"
     restart: "no"
     volumes:
       - .:/code
-      - "/var/www/html/friendo/static:/code/static"
