@@ -24,11 +24,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", None)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DJANGO_SECRET_KEY", None)
+DEBUG = True if bool(os.environ.get("DEBUG")) in ["true", "True", "TRUE"] else False
 
 ALLOWED_HOSTS = []
 
+for host in os.environ.get("ALLOWED_HOSTS").split(","):
+    ALLOWED_HOSTS.append(host)
+
+ALLOWED_HOSTS.append(os.environ.get("DEBUG_HOST"))
 
 # Application definition
 
@@ -127,6 +130,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = "/static/"
+STATIC_ROOT = "/static"
 
 # Custom user model
 AUTH_USER_MODEL = "users.User"
