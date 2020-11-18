@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", None)
 
-DEBUG = True if bool(os.environ.get("DEBUG")) in ["true", "True", "TRUE"] else False
+DEBUG = True if os.environ.get("DEBUG") in ["true", "True", "TRUE"] else False
 
 ALLOWED_HOSTS = []
 
@@ -62,7 +62,7 @@ ROOT_URLCONF = "friendo_site.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(os.path.dirname(__file__), "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
