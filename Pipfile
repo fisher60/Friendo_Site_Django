@@ -10,6 +10,7 @@ django = "*"
 psycopg2 = "*"
 ariadne = "*"
 pyjwt = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.8"
