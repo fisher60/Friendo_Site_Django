@@ -44,13 +44,16 @@ class User(AbstractUser):
 
         return auth_token
 
+    def __str__(self):
+        return f"{self.username} || {self.id}"
+
 
 class Note(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.CharField(max_length=50)
 
-    def __str__(self):
-        return f"{self.user.username} || {self.id}"
+    # def __str__(self):
+    #     return f"{self.user.username} || {self.id}"
 
 
 class Currency(models.Model):
@@ -61,31 +64,34 @@ class Currency(models.Model):
         return "Chad Bucks"
 
 
-class Token(models.Model):
-    """Abstract token model"""
+# class Token(models.Model):
+#     """Abstract token model"""
+#
+#     expiration = models.DateTimeField()
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     token = models.CharField(max_length=4096)
+#
+#     class Meta:
+#         abstract = True
+#
+#     @staticmethod
+#     def get_expiration():
+#         """
+#         Calculate the expiration time
+#         """
+#         raise NotImplementedError()
+#
+#     def encode_token(self):
+#         """
+#         abstract method override
+#         """
+#         raise NotImplementedError()
 
-    expiration = models.DateTimeField()
+
+class AuthToken(models.Model):#(Token):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     token = models.CharField(max_length=4096)
-
-    class Meta:
-        abstract = True
-
-    @staticmethod
-    def get_expiration():
-        """
-        Calculate the expiration time
-        """
-        raise NotImplementedError()
-
-    def encode_token(self):
-        """
-        abstract method override
-        """
-        raise NotImplementedError()
-
-
-class AuthToken(Token):
+    expiration = models.DateTimeField()
     def __str__(self):
         return f"{self.user.username} || {self.token[-5:-1]}"
 
@@ -122,12 +128,12 @@ class AuthToken(Token):
         ).decode("utf-8")
         self.token = encode_token
 
-    def validate_token(self):
-        """
-        Validates whether this token is valid based on expiration time and current time
-        :return: True if token is valid else false
-        """
-        return datetime.now() < self.expiration
+    # def validate_token(self):
+    #     """
+    #     Validates whether this token is valid based on expiration time and current time
+    #     :return: True if token is valid else false
+    #     """
+    #     return datetime.now() < self.expiration
 
 
 def validate_token(token: str) -> bool:
