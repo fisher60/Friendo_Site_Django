@@ -3,7 +3,7 @@
 {% block content %}
 <body
   style="
-    background: linear-gradient(to top right, #000000 0%, #565656 100%);
+    background: linear-gradient(to top right, #00526E 0%, #00BFFF 100%);
     background-repeat: no-repeat;
     background-size: cover;
     height: 100%;
@@ -22,6 +22,8 @@
           text-align: center;
         "
       >
+      {% load static %}
+      <img class="rounded-circle" type='image/png' src="{% static 'images/friendo_logo/Friendo_Blue_Eyes.png' %}" style="width: 250px; height: auto;">
         <h1 style="color: white; margin: 0 auto; padding: 20px">Friendo Bot</h1>
       </div>
     </div>
