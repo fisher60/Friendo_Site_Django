@@ -11,6 +11,7 @@ psycopg2 = "*"
 ariadne = "*"
 pyjwt = "*"
 gunicorn = "*"
+requests = "*"
 
 [requires]
 python_version = "3.8"

@@ -14,3 +14,7 @@ services:
       - POSTGRES_PASSWORD
       - POSTGRES_USER
       - DEBUG_HOST
+      - HOST_DNS
+      - BOT_CLIENT_ID
+      - DISCORD_AUTH_URL
+      - BOT_CLIENT_SECRET
