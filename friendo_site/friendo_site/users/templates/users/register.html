@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'users/css/register.css' %}" />
+<div class="register-wrapper">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <legend>Join Now</legend>
+
+            <div class="fields">
+                <div class="field-wrapper">
+                    <label>Username </label>
+                    <br>
+                    {{ form.username }}
+                    <span class="field-error">{{ form.username.errors }}</span>
+                </div>
+
+                <div class="field-wrapper">
+                    <label>Password </label>
+                    <br>
+                    {{ form.password1 }}
+                    <span class="field-error">{{ form.password1.errors }}</span>
+                </div>
+
+                <div class="field-wrapper">
+                    <label>Re-Enter Password </label>
+                    <br>
+                    {{ form.password2 }}
+                    <span class="field-error">{{ form.password2.errors }}</span>
+                </div>
+            </div>
+            <button class="btn btn-md btn-outline-light submit-button" type="submit">Sign Up</button>
+        </div>
+    </form>
+</div>
+{% endblock content %}
