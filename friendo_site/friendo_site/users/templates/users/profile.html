@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if messages %}
+<div>
+    <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<h1>{{ user.username }}</h1>
+
+{% if not user.discord_id %}
+    <a href="{% url 'discord-auth' %}" target="_blank" type="button" class="btn btn-lg btn-outline-light" style="width: 200px; margin-top: 50px">Verify Account</a>
+{% else %}
+    <h3>Discord Verified: </h3>
+    <ul>
+        <li>{{ user.discord_username }}#{{user.discord_discriminator}}</li>
+        <li>ID: {{ user.discord_id }}</li>
+    </ul>
+{% endif %}
+
+{% endblock content %}

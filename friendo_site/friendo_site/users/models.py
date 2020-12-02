@@ -11,7 +11,9 @@ class User(AbstractUser):
     """Custom user class, contains django backend as well as discord data for users."""
 
     bot_admin = models.BooleanField(default=False)
-    discord_id = models.BigIntegerField(blank=True, null=True, default=None)
+    discord_id = models.BigIntegerField(
+        blank=True, null=True, default=None, unique=True
+    )
     discord_username = models.CharField(
         max_length=100, blank=True, null=True, default=None
     )
@@ -21,6 +23,7 @@ class User(AbstractUser):
     discord_avatar = models.CharField(
         max_length=100, blank=True, null=True, default=None
     )
+    is_bot = models.BooleanField(blank=True, default=False)
 
     @property
     def notes(self):
