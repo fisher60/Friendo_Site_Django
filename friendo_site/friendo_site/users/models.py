@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
+from django.core.exceptions import PermissionDenied
 
 
 class User(AbstractUser):
@@ -38,9 +38,9 @@ class User(AbstractUser):
         auth_token.encode_token()
 
         # clear previous tokens before saving
-        self.clear_tokens()
+       # self.clear_tokens()
 
-        auth_token.save()
+        #auth_token.save()
 
         return auth_token
 
@@ -52,8 +52,8 @@ class Note(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.CharField(max_length=50)
 
-    # def __str__(self):
-    #     return f"{self.user.username} || {self.id}"
+    def __str__(self):
+        return f"{self.user.username} || {self.id}"
 
 
 class Currency(models.Model):
@@ -88,10 +88,11 @@ class Currency(models.Model):
 #         raise NotImplementedError()
 
 
-class AuthToken(models.Model):#(Token):
+class AuthToken(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     token = models.CharField(max_length=4096)
     expiration = models.DateTimeField()
+
     def __str__(self):
         return f"{self.user.username} || {self.token[-5:-1]}"
 
@@ -110,8 +111,8 @@ class AuthToken(models.Model):#(Token):
 
     def encode_token(self):
         """Encode a user Authentication token."""
-        if not self.expiration:
-            raise ValueError("set the token expiration before encoding.")
+        # if not self.expiration:
+        #     raise ValueError("set the token expiration before encoding.")
         if not self.user or not isinstance(self.user, User):
             raise ValueError("set the token user before encoding")
 
