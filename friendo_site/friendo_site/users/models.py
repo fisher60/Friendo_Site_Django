@@ -37,11 +37,6 @@ class User(AbstractUser):
         auth_token.set_expiration()
         auth_token.encode_token()
 
-        # clear previous tokens before saving
-       # self.clear_tokens()
-
-        #auth_token.save()
-
         return auth_token
 
     def __str__(self):
@@ -62,30 +57,6 @@ class Currency(models.Model):
 
     def __str__(self):
         return "Chad Bucks"
-
-
-# class Token(models.Model):
-#     """Abstract token model"""
-#
-#     expiration = models.DateTimeField()
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     token = models.CharField(max_length=4096)
-#
-#     class Meta:
-#         abstract = True
-#
-#     @staticmethod
-#     def get_expiration():
-#         """
-#         Calculate the expiration time
-#         """
-#         raise NotImplementedError()
-#
-#     def encode_token(self):
-#         """
-#         abstract method override
-#         """
-#         raise NotImplementedError()
 
 
 class AuthToken(models.Model):
@@ -111,8 +82,6 @@ class AuthToken(models.Model):
 
     def encode_token(self):
         """Encode a user Authentication token."""
-        # if not self.expiration:
-        #     raise ValueError("set the token expiration before encoding.")
         if not self.user or not isinstance(self.user, User):
             raise ValueError("set the token user before encoding")
 
@@ -128,13 +97,6 @@ class AuthToken(models.Model):
             payload, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM
         ).decode("utf-8")
         self.token = encode_token
-
-    # def validate_token(self):
-    #     """
-    #     Validates whether this token is valid based on expiration time and current time
-    #     :return: True if token is valid else false
-    #     """
-    #     return datetime.now() < self.expiration
 
 
 def validate_token(token: str) -> bool:
