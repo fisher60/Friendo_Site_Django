@@ -17,27 +17,12 @@ class User(AbstractUser):
     def notes(self):
         return [x.content for x in self.note_set.all()]
 
-    def clear_tokens(self):
-        """
-        Delete all existing AuthTokens the user has.
-        :return: None
-        """
-        auth_tokens = self.authtoken_set.all()
-        # if user has existing tokens, delete them all
-        if auth_tokens:
-            for token in auth_tokens:
-                token.delete()
-
     def generate_token(self):
         """
         creates a new token for the current user
-        :return: AuthToken
+        :return: An instance of AuthToken
         """
-        auth_token = AuthToken(user=self)
-        auth_token.set_expiration()
-        auth_token.encode_token()
-
-        return auth_token
+        return AuthToken(user=self.username, is_superuser=self.is_superuser)
 
     def __str__(self):
         return f"{self.username} || {self.id}"
@@ -59,13 +44,16 @@ class Currency(models.Model):
         return "Chad Bucks"
 
 
-class AuthToken(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    token = models.CharField(max_length=4096)
-    expiration = models.DateTimeField()
+class AuthToken:
+    def __init__(self, user: str, is_superuser=False):
+        self.user = user
+        self.is_superuser = is_superuser
+        self.token = None
+
+        self.encode_token()
 
     def __str__(self):
-        return f"{self.user.username} || {self.token[-5:-1]}"
+        return self.token
 
     @staticmethod
     def get_expiration() -> datetime:
@@ -77,21 +65,16 @@ class AuthToken(models.Model):
             )
         return datetime.now() + token_delta
 
-    def set_expiration(self):
-        self.expiration = self.get_expiration()
-
     def encode_token(self):
         """Encode a user Authentication token."""
-        if not self.user or not isinstance(self.user, User):
-            raise ValueError("set the token user before encoding")
 
         encode_time = datetime.utcnow()
         payload = {
-            "exp": self.expiration,
+            "exp": self.get_expiration(),
             "nbf": encode_time,
             "iat": encode_time,
-            "user": self.user.username,
-            "is_admin": self.user.is_superuser,
+            "user": self.user,
+            "is_admin": self.is_superuser,
         }
         encode_token = jwt.encode(
             payload, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM
