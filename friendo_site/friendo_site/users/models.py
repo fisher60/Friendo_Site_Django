@@ -12,6 +12,7 @@ class User(AbstractUser):
 
     bot_admin = models.BooleanField(default=False)
     discord_id = models.CharField(max_length=18, null=True)
+    api_authorized = models.BooleanField(default=False)
 
     @property
     def notes(self):
@@ -22,7 +23,7 @@ class User(AbstractUser):
         creates a new token for the current user
         :return: An instance of AuthToken
         """
-        return AuthToken(user=self.username, is_superuser=self.is_superuser)
+        return AuthToken(user=self)
 
     def __str__(self):
         return f"{self.username} || {self.id}"
@@ -45,9 +46,8 @@ class Currency(models.Model):
 
 
 class AuthToken:
-    def __init__(self, user: str, is_superuser=False):
+    def __init__(self, user):
         self.user = user
-        self.is_superuser = is_superuser
         self.token = None
 
         self.encode_token()
@@ -73,8 +73,9 @@ class AuthToken:
             "exp": self.get_expiration(),
             "nbf": encode_time,
             "iat": encode_time,
-            "user": self.user,
-            "is_admin": self.is_superuser,
+            "user": self.user.username,
+            "is_admin": self.user.is_superuser,
+            "api_authorized": self.user.api_authorized,
         }
         encode_token = jwt.encode(
             payload, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM
@@ -87,9 +88,14 @@ def validate_token(token: str) -> bool:
         token, settings.SECRET_KEY, algorithms=[settings.JWT_ALGORITHM]
     )
     try:
-        expiration_time = payload["exp"]
+        expiration_time = payload.get("exp")
         if datetime.now() < datetime.fromtimestamp(expiration_time):
-            return True
+            if payload.get("api_authorized"):
+                return True
+            else:
+                raise PermissionDenied(
+                    "You do not have permission to access this feature."
+                )
         else:
             raise PermissionDenied("Token expired")
     except KeyError:

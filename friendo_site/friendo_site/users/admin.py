@@ -8,10 +8,7 @@ class CustomUserAdmin(UserAdmin):
         (
             "Discord",
             {
-                "fields": (
-                    "bot_admin",
-                    "discord_id",
-                ),
+                "fields": ("bot_admin", "discord_id", "api_authorized"),
             },
         ),
     )
