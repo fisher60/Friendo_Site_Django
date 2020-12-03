@@ -33,6 +33,6 @@ services:
     restart: "no"
     volumes:
       - .:/code
+
 volumes:
   postgres_data:
-
