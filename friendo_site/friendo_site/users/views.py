@@ -6,7 +6,7 @@ from django.conf import settings
 from django.db import IntegrityError
 from django.urls import reverse
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 from .forms import UserRegisterForm
@@ -67,28 +67,42 @@ def exchange_code(code: str) -> dict:
 
 
 def register(request):
-    if request.method == "POST":
-        form = UserRegisterForm(request.POST)
+    if not request.user.is_authenticated:
+        if request.method == "POST":
+            form = UserRegisterForm(request.POST)
 
-        if form.is_valid():
-            form.save()
-            return redirect("login")
+            if form.is_valid():
+                form.save()
+                return redirect("login")
+        else:
+            form = UserRegisterForm()
     else:
-        form = UserRegisterForm()
+        messages.error(request, "You must logout to register a new account")
+        return redirect("profile")
 
     return render(request, "users/register.html", {"form": form})
 
 
 def login_view(request):
-    username = request.POST.get("username", None)
-    password = request.POST.get("password", None)
-    user = authenticate(request, username=username, password=password)
-    if user:
-        login(request, user)
-        return redirect("profile")
-    else:
-        return render(request, "users/login.html")
+    if not request.user.is_authenticated:
+        username = request.POST.get("username", None)
+        password = request.POST.get("password", None)
+        user = authenticate(request, username=username, password=password)
+        if user:
+            login(request, user)
+        else:
+            return render(request, "users/login.html")
+
+    return redirect("profile")
 
 
+@login_required
 def profile(request):
     return render(request, "users/profile.html")
+
+
+def logout_view(request):
+    if request.user.is_authenticated:
+        logout(request)
+        messages.success(request, "You have been logged out.")
+    return redirect("index")
