@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, AuthToken, Note
+from .models import User, Note
 
 
 class CustomUserAdmin(UserAdmin):
@@ -8,15 +8,11 @@ class CustomUserAdmin(UserAdmin):
         (
             "Discord",
             {
-                "fields": (
-                    "bot_admin",
-                    "discord_id",
-                ),
+                "fields": ("bot_admin", "discord_id", "api_authorized"),
             },
         ),
     )
 
 
 admin.site.register(User, CustomUserAdmin)
-admin.site.register(AuthToken)
 admin.site.register(Note)
