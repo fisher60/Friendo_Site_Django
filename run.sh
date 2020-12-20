@@ -11,10 +11,10 @@ else
 fi
 
 echo "Running docker compose..."
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up 2>error.log
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up 2>error.txt
 
 if [ $? -eq 1 ]; then
 	echo "Error occurred while running docker-compose. Please check the error file for futher info."
 else
-	echo "Container succesffuly running."
+	echo "Container succesffuly stopped."
 fi
