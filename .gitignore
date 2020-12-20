@@ -2,3 +2,5 @@ __pycache__/
 *.python-version
 .idea/
 *.env
+log.txt
+error.txt
