@@ -11,7 +11,7 @@ from tests.settings import (
 ADMIN_TEST_URL = f"{LOCAL_TEST_URL}/admin"
 
 
-class TestFroms:
+class TestForms:
     """Main class to test any form. Specifically the admin for currently."""
 
     def setup_method(self):
