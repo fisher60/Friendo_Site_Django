@@ -79,7 +79,7 @@ class AuthToken:
         }
         encode_token = jwt.encode(
             payload, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM
-        ).decode("utf-8")
+        )
         self.token = encode_token
 
 
