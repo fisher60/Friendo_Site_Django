@@ -21,7 +21,7 @@ services:
       - 8000:8000
     depends_on:
       - db
-    command: -c "python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000"
+    command: -c "pipenv install --dev && python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000"
 
     environment:
       - DEBUG=TRUE
