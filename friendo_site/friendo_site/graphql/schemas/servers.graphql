@@ -1,0 +1,8 @@
+type Server{
+    server_id: String!
+    dogeboard_id: String!
+}
+
+input ServerInput {
+    server_id: String!
+}
