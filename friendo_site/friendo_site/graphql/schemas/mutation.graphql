@@ -1,4 +1,5 @@
 type Mutation {
     login(data: LoginInput!): LoginPayload
     user(data: GetUserInput!): User
+    server(data: ServerInput!): Server
 }
