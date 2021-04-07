@@ -1,6 +1,7 @@
 type Server{
     server_id: String!
-    dogeboard_id: String!
+    dogeboard_id: String
+    dogeboard_emoji: String
 }
 
 input ServerInput {
