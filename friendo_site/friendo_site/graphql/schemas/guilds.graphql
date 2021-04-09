@@ -1,0 +1,17 @@
+type Guild{
+    guild_id: BigInt!
+    dogeboard_id: BigInt
+    dogeboard_emoji: String
+    dogeboard_reactions_required: Int
+}
+
+input GuildInput {
+    guild_id: BigInt!
+}
+
+input GuildUpdateInput {
+    guild_id: BigInt!
+    dogeboard_id: BigInt
+    dogeboard_emoji: String
+    dogeboard_reactions_required: Int
+}
