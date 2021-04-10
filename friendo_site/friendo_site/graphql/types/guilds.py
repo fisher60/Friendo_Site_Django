@@ -10,16 +10,6 @@ def get_guild(_, info, data):
         raise KeyError("guild_id is missing")
 
 
-# @token_required
-# def create_guild(_, info, data):
-#     if data.get("guild_id", None):
-#         new_guild = Guild(guild_id=int(data.get("guild_id")))
-#         new_guild.save()
-#         return new_guild
-#     else:
-#         raise KeyError("guild_id is missing")
-
-
 @token_required
 def modify_guild(_, info, data):
     if guild_id := data.get("guild_id", None):
