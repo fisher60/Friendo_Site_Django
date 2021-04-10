@@ -2,6 +2,5 @@ type Mutation {
     login(data: LoginInput!): LoginPayload
     user(data: GetUserInput!): User
     get_guild(data: GuildInput!): Guild
-    create_guild(data: GuildInput!): Guild
-    update_guild(data: GuildUpdateInput!): Guild
+    modify_guild(data: GuildInput!): Guild
 }
