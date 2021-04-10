@@ -30,4 +30,4 @@ class Guild(models.Model):
 
     def save(self, *args, **kwargs):
         if self.reactions_is_valid():
-            super(Guild, self).save(args, kwargs)
+            super(Guild, self).save(*args, **kwargs)
