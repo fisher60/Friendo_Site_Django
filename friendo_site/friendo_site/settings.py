@@ -36,6 +36,7 @@ ALLOWED_HOSTS.append(os.environ.get("DEBUG_HOST"))
 # Application definition
 
 INSTALLED_APPS = [
+    "friendo_site.guilds",
     "friendo_site.graphql",
     "friendo_site.users",
     "ariadne.contrib.django",

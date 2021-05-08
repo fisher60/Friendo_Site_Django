@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
+from django.core.exceptions import PermissionDenied
 
 
 class User(AbstractUser):
@@ -12,37 +12,21 @@ class User(AbstractUser):
 
     bot_admin = models.BooleanField(default=False)
     discord_id = models.CharField(max_length=18, null=True)
+    api_authorized = models.BooleanField(default=False)
 
     @property
     def notes(self):
         return [x.content for x in self.note_set.all()]
 
-    def clear_tokens(self):
-        """
-        Delete all existing AuthTokens the user has.
-        :return: None
-        """
-        auth_tokens = self.authtoken_set.all()
-        # if user has existing tokens, delete them all
-        if auth_tokens:
-            for token in auth_tokens:
-                token.delete()
-
     def generate_token(self):
         """
         creates a new token for the current user
-        :return: AuthToken
+        :return: An instance of AuthToken
         """
-        auth_token = AuthToken(user=self)
-        auth_token.set_expiration()
-        auth_token.encode_token()
+        return AuthToken(user=self)
 
-        # clear previous tokens before saving
-        self.clear_tokens()
-
-        auth_token.save()
-
-        return auth_token
+    def __str__(self):
+        return f"{self.username} || {self.id}"
 
 
 class Note(models.Model):
@@ -61,33 +45,15 @@ class Currency(models.Model):
         return "Chad Bucks"
 
 
-class Token(models.Model):
-    """Abstract token model"""
+class AuthToken:
+    def __init__(self, user):
+        self.user = user
+        self.token = None
 
-    expiration = models.DateTimeField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    token = models.CharField(max_length=4096)
+        self.encode_token()
 
-    class Meta:
-        abstract = True
-
-    @staticmethod
-    def get_expiration():
-        """
-        Calculate the expiration time
-        """
-        raise NotImplementedError()
-
-    def encode_token(self):
-        """
-        abstract method override
-        """
-        raise NotImplementedError()
-
-
-class AuthToken(Token):
     def __str__(self):
-        return f"{self.user.username} || {self.token[-5:-1]}"
+        return self.token
 
     @staticmethod
     def get_expiration() -> datetime:
@@ -99,35 +65,22 @@ class AuthToken(Token):
             )
         return datetime.now() + token_delta
 
-    def set_expiration(self):
-        self.expiration = self.get_expiration()
-
     def encode_token(self):
         """Encode a user Authentication token."""
-        if not self.expiration:
-            raise ValueError("set the token expiration before encoding.")
-        if not self.user or not isinstance(self.user, User):
-            raise ValueError("set the token user before encoding")
 
         encode_time = datetime.utcnow()
         payload = {
-            "exp": self.expiration,
+            "exp": self.get_expiration(),
             "nbf": encode_time,
             "iat": encode_time,
             "user": self.user.username,
             "is_admin": self.user.is_superuser,
+            "api_authorized": self.user.api_authorized,
         }
         encode_token = jwt.encode(
             payload, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM
-        ).decode("utf-8")
+        )
         self.token = encode_token
-
-    def validate_token(self):
-        """
-        Validates whether this token is valid based on expiration time and current time
-        :return: True if token is valid else false
-        """
-        return datetime.now() < self.expiration
 
 
 def validate_token(token: str) -> bool:
@@ -135,9 +88,14 @@ def validate_token(token: str) -> bool:
         token, settings.SECRET_KEY, algorithms=[settings.JWT_ALGORITHM]
     )
     try:
-        expiration_time = payload["exp"]
+        expiration_time = payload.get("exp")
         if datetime.now() < datetime.fromtimestamp(expiration_time):
-            return True
+            if payload.get("api_authorized"):
+                return True
+            else:
+                raise PermissionDenied(
+                    "You do not have permission to access this feature."
+                )
         else:
             raise PermissionDenied("Token expired")
     except KeyError:
