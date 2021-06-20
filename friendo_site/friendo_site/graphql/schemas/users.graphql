@@ -3,6 +3,7 @@ type User{
     username: String!
     bot_admin: Boolean!
     notes: [String!]
+    discord_id: String
     timezone_name: String
 }
 
