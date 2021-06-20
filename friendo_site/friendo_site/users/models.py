@@ -13,7 +13,7 @@ class User(AbstractUser):
     bot_admin = models.BooleanField(default=False)
     discord_id = models.CharField(max_length=18, null=True)
     api_authorized = models.BooleanField(default=False)
-    timezone_name = models.CharField(max_length=50, default=None, null=True)
+    timezone_name = models.CharField(max_length=50, default=None, null=True, blank=True)
 
     @property
     def notes(self):
