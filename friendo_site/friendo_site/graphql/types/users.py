@@ -21,6 +21,25 @@ def get_user(_, info, data):
         raise KeyError("discord_id or username invalid or both are missing")
 
 
+@token_required
+def modify_user(_, info, data):
+    if discord_user_id := data.get("discord_id", None):
+        this_user, user_was_created = User.objects.get_or_create(
+            discord_id=discord_user_id
+        )
+
+        if user_was_created:
+            this_user.username = f"temp_{discord_user_id}"
+
+        if timezone_data := data.get("timezone_name", None):
+            this_user.timezone_name = timezone_data
+
+        this_user.save()
+        return this_user
+    else:
+        raise KeyError("discord_id is a required parameter.")
+
+
 def resolve_login(_, info, data):
     request = info.context["request"]
     user = authenticate(username=data["username"], password=data["password"])

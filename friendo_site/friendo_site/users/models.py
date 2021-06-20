@@ -13,6 +13,7 @@ class User(AbstractUser):
     bot_admin = models.BooleanField(default=False)
     discord_id = models.CharField(max_length=18, null=True)
     api_authorized = models.BooleanField(default=False)
+    timezone_name = models.CharField(max_length=50, default=None, null=True)
 
     @property
     def notes(self):
@@ -24,9 +25,6 @@ class User(AbstractUser):
         :return: An instance of AuthToken
         """
         return AuthToken(user=self)
-
-    def __str__(self):
-        return f"{self.username} || {self.id}"
 
 
 class Note(models.Model):

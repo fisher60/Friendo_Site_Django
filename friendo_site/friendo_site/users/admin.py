@@ -8,7 +8,12 @@ class CustomUserAdmin(UserAdmin):
         (
             "Discord",
             {
-                "fields": ("bot_admin", "discord_id", "api_authorized"),
+                "fields": (
+                    "bot_admin",
+                    "discord_id",
+                    "api_authorized",
+                    "timezone_name",
+                ),
             },
         ),
     )
