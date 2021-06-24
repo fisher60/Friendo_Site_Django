@@ -2,7 +2,7 @@
 A website for managing Friendo bot and the Friendo API
 
 ### start docker
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+`docker-compose -f docker-compose.yml -f docker-compose.dev.yml up`
 
 ### Public Dev Server
 At the moment the `docker-compose.dev.yml` debug variable must be edited for the dev deployment.
