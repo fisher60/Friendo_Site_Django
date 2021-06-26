@@ -3,6 +3,8 @@ type User{
     username: String!
     bot_admin: Boolean!
     notes: [String!]
+    discord_id: String
+    timezone_name: String
 }
 
 input LoginInput {
@@ -13,6 +15,11 @@ input LoginInput {
 input GetUserInput {
     username: String
     discord_id: String
+}
+
+input ModifyUserInput {
+    discord_id: String!
+    timezone_name: String
 }
 
 type LoginPayload {
