@@ -1,9 +1,12 @@
 import requests
 
 from django.http import HttpRequest, JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.conf import settings
 from django.urls import reverse
+from django.contrib.auth import authenticate, login
+
+from .forms import UserRegisterForm
 
 
 def discord_login(request: HttpRequest):
@@ -39,3 +42,27 @@ def exchange_code(code: str) -> dict:
         return user
     else:
         return credentials
+
+
+def register(request):
+    if request.method == "POST":
+        form = UserRegisterForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect("login")
+    else:
+        form = UserRegisterForm()
+
+    return render(request, "users/register.html", {"form": form})
+
+
+def login_view(request):
+    username = request.POST.get("username", None)
+    password = request.POST.get("password", None)
+    user = authenticate(request, username=username, password=password)
+    if user:
+        login(request, user)
+        return redirect("index")
+    else:
+        return render(request, "users/login.html")
