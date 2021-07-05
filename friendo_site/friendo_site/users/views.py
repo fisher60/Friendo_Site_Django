@@ -1,10 +1,13 @@
 import requests
 
-from django.http import HttpRequest, JsonResponse
+from django.http import HttpRequest
 from django.shortcuts import redirect, render
 from django.conf import settings
+from django.db import IntegrityError
 from django.urls import reverse
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 
 from .forms import UserRegisterForm
 
@@ -13,10 +16,29 @@ def discord_login(request: HttpRequest):
     return redirect(settings.DISCORD_AUTH_URL)
 
 
+@login_required
 def discord_login_redirect(request: HttpRequest):
     code = request.GET.get("code")
-    user = exchange_code(code)
-    return JsonResponse({"User": user})
+    user_data = exchange_code(code)
+
+    try:
+        user = request.user
+        user.discord_id = user_data.get("id")
+        user.discord_username = user_data.get("username")
+        user.discord_discriminator = user_data.get("discriminator")
+        user.is_bot = user_data.get("bot", False)
+        user.discord_avatar = user_data.get("avatar")
+        try:
+            user.save()
+        except IntegrityError:
+            messages.error(request, "Discord user already belongs to account")
+            return redirect("profile")
+
+        messages.success(request, "Discord account verified")
+    except KeyError:
+        messages.error(request, "Could not retrieve user data")
+
+    return redirect("profile")
 
 
 def exchange_code(code: str) -> dict:
@@ -63,6 +85,10 @@ def login_view(request):
     user = authenticate(request, username=username, password=password)
     if user:
         login(request, user)
-        return redirect("index")
+        return redirect("profile")
     else:
         return render(request, "users/login.html")
+
+
+def profile(request):
+    return render(request, "users/profile.html")

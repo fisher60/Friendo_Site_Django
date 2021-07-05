@@ -14,7 +14,10 @@ class User(AbstractUser):
     api_authorized = models.BooleanField(default=False)
 
     timezone_name = models.CharField(max_length=50, default=None, null=True, blank=True)
-    discord_id = models.BigIntegerField(blank=True, null=True, default=None)
+
+    discord_id = models.BigIntegerField(
+        blank=True, null=True, default=None, unique=True
+    )
     discord_username = models.CharField(
         max_length=100, blank=True, null=True, default=None
     )
@@ -24,6 +27,7 @@ class User(AbstractUser):
     discord_avatar = models.CharField(
         max_length=100, blank=True, null=True, default=None
     )
+    is_bot = models.BooleanField(blank=True, default=False)
 
     @property
     def notes(self):

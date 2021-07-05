@@ -151,3 +151,5 @@ DISCORD_USER_URL = "https://discord.com/api/v6/users/@me"
 
 BOT_CLIENT_ID = os.environ.get("BOT_CLIENT_ID")
 BOT_CLIENT_SECRET = os.environ.get("BOT_CLIENT_SECRET")
+
+LOGIN_URL = "login"
