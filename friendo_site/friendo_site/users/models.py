@@ -11,9 +11,13 @@ class User(AbstractUser):
     """Custom user class, contains django backend as well as discord data for users."""
 
     bot_admin = models.BooleanField(default=False)
-    discord_id = models.CharField(max_length=18, null=True)
     api_authorized = models.BooleanField(default=False)
+
     timezone_name = models.CharField(max_length=50, default=None, null=True, blank=True)
+    discord_id = models.BigIntegerField(blank=True, default=None)
+    discord_username = models.CharField(max_length=100, blank=True, default=None)
+    discord_discriminator = models.CharField(max_length=4, blank=True, default=None)
+    discord_avatar = models.CharField(max_length=100, blank=True, default=None)
 
     @property
     def notes(self):
