@@ -4,6 +4,8 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+selenium = "*"
+pytest = "*"
 
 [packages]
 django = "*"
@@ -15,3 +17,10 @@ requests = "*"
 
 [requires]
 python_version = "3.8"
+
+[scripts]
+test = "pytest tests"
+tests = "pytest tests"
+docker-dev-build = "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build"
+docker-dev-up = "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up"
+docker-deploy = "docker-compose -f docker-compose.yml -f docker-compose.deploy.yml up --build --d"

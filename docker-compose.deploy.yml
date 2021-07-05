@@ -2,7 +2,7 @@
 
 version: "3.8"
 services:
-  friendo_site:
+  friendo-site:
     build:
       target: friendo_site
     ports:
