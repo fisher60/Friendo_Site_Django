@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'users/css/register.css' %}" />
+<div class="register-wrapper">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">Username</label><br>
+            <input type="text" name="username"><br>
+
+            <br>
+
+            <label for="password">Password</label><br>
+            <input type="password" name="password"><br>
+            <button class="btn btn-md btn-outline-light submit-button" type="submit">Login</button>
+        </div>
+    </form>
+</div>
+{% endblock content %}

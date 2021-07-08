@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class GraphqlConfig(AppConfig):
-    name = "graphql"
+    name = "friendo_site.graphql"
