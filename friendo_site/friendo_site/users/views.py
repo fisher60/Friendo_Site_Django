@@ -10,10 +10,15 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 from .forms import UserRegisterForm
+from .models import User
 
 
 def discord_login(request: HttpRequest):
     return redirect(settings.DISCORD_AUTH_URL)
+
+
+def is_temp_user(check_user: User) -> bool:
+    return check_user is not None and not check_user.has_usable_password()
 
 
 @login_required
@@ -23,14 +28,25 @@ def discord_login_redirect(request: HttpRequest):
 
     try:
         user = request.user
-        user.discord_id = user_data.get("id")
+        user.discord_id = int(user_data.get("id"))
         user.discord_username = user_data.get("username")
         user.discord_discriminator = user_data.get("discriminator")
         user.is_bot = user_data.get("bot", False)
         user.discord_avatar = user_data.get("avatar")
+
+        temp_user = User.objects.get(discord_id=int(user_data.get("id")))
+        backup_user = temp_user
+
+        if is_temp_user(temp_user):
+            user.timezone_name = temp_user.timezone_name
         try:
+            if is_temp_user(temp_user):
+                temp_user.delete()
+
             user.save()
         except IntegrityError:
+            backup_user.save()
+
             messages.error(request, "Discord user already belongs to account")
             return redirect("profile")
 

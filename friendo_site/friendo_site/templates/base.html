@@ -10,10 +10,25 @@
 <body>
 <div style="width: 100%; padding: 5px; text-align: right;">
     {% if not user.is_authenticated %}
-        <a href="{% url 'login' %}" type="button" class="btn btn-sm btn-outline-light" style="width: 85px;">Login</a>
+
+        {% if request.path == "/users/login/" %}
+            <a href="{% url 'index' %}" type="button" class="btn btn-sm btn-outline-light" style="width: 85px;">Home</a>
+        {% else %}
+            <a href="{% url 'login' %}" type="button" class="btn btn-sm btn-outline-light" style="width: 85px;">Login</a>
+        {% endif %}
+
         <a href="{% url 'register' %}" type="button" class="btn btn-sm btn-outline-light" style="width: 85px;">Sign Up</a>
+
     {% else %}
+
+        {% if request.path == "/users/profile/" %}
+            <a href="{% url 'index' %}" type="button" class="btn btn-sm btn-outline-light" style="width: 85px;">Home</a>
+        {% else %}
+            <a href="{% url 'profile' %}" type="button" class="btn btn-sm btn-outline-light" style="width: 85px;">Profile</a>
+        {% endif %}
+
         <a href="{% url 'logout' %}" type="button" class="btn btn-sm btn-outline-light" style="width: 85px;">Logout</a>
+
     {% endif %}
 </div>
 

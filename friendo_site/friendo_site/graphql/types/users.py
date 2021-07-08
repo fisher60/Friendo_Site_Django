@@ -30,6 +30,7 @@ def modify_user(_, info, data):
 
         if user_was_created:
             this_user.username = f"temp_{discord_user_id}"
+            this_user.set_unusable_password()
 
         if timezone_data := data.get("timezone_name", None):
             this_user.timezone_name = timezone_data
@@ -45,7 +46,11 @@ def resolve_login(_, info, data):
     user = authenticate(username=data["username"], password=data["password"])
 
     if user is None:
-        return {"status": False, "error": "Invalid username or password", "user": None}
+        return {
+            "status": False,
+            "error": "Invalid username or password",
+            "user": None,
+        }
 
     # User is valid
     login(request, user)
