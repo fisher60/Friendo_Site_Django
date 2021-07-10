@@ -29,7 +29,6 @@ def discord_login_redirect(request: HttpRequest):
 
     try:
         user = request.user
-        raise ValueError(user_data)
         user.discord_id = int(user_data.get("id"))
         user.discord_username = user_data.get("username")
         user.discord_discriminator = user_data.get("discriminator")
