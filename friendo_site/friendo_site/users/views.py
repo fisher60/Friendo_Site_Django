@@ -68,7 +68,7 @@ def exchange_code(code: str) -> dict:
         "client_secret": settings.BOT_CLIENT_SECRET,
         "grant_type": "authorization_code",
         "code": code,
-        "redirect_uri": f"http://{settings.HOST_DNS}{reverse('auth_redirect')}",
+        "redirect_uri": f"{settings.HOST_DNS}{reverse('auth_redirect')}",
         "scope": "identify",
     }
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
