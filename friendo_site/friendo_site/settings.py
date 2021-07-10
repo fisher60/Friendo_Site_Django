@@ -22,9 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", None)
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
-DEBUG = True if os.environ.get("DEBUG") in ["true", "True", "TRUE"] else False
+DEBUG = os.environ.get("DEBUG") in ["true", "True", "TRUE"]
 
 ALLOWED_HOSTS = []
 
@@ -130,8 +130,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
+STATICFILES_DIRS = [BASE_DIR / "friendo_site" / "static"]
 STATIC_URL = "/static/"
 STATIC_ROOT = "/static"
+
+HOST_DNS = os.environ.get("HOST_DNS")
 
 # Custom user model
 AUTH_USER_MODEL = "users.User"
@@ -139,3 +142,14 @@ AUTH_USER_MODEL = "users.User"
 # JWT Tokens
 JWT_ALGORITHM = "HS256"
 JWT_AUTH_TOKEN_DELTA = timedelta(days=30)
+
+# Discord OAuth2
+DISCORD_AUTH_URL = os.environ.get("DISCORD_AUTH_URL")
+
+DISCORD_TOKEN_URL = "https://discord.com/api/oauth2/token"
+DISCORD_USER_URL = "https://discord.com/api/v6/users/@me"
+
+BOT_CLIENT_ID = os.environ.get("BOT_CLIENT_ID")
+BOT_CLIENT_SECRET = os.environ.get("BOT_CLIENT_SECRET")
+
+LOGIN_URL = "login"

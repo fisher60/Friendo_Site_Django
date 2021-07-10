@@ -1,0 +1,41 @@
+.register-wrapper{
+    height: 100%;
+    padding-top: 30vh;
+}
+
+.form-group{
+    border: 5px solid white;
+    border-radius: 25px;
+    color: white;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 25px;
+}
+.form-group legend{
+    text-align: center;
+}
+
+.form-group ul{
+    display: inline;
+    list-style: none;
+}
+
+.field-wrapper li{
+    display: inline;
+}
+
+.field-error{
+    font-size: 0.7rem;
+}
+
+.submit-button{
+    margin-top: 15px;
+}
+
+@media only screen and (min-width: 1200px){
+    .form-group{
+        width: 30%;
+    }
+
+}
