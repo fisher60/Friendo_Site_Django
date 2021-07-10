@@ -29,6 +29,7 @@ def discord_login_redirect(request: HttpRequest):
 
     try:
         user = request.user
+        raise ValueError(user_data)
         user.discord_id = int(user_data.get("id"))
         user.discord_username = user_data.get("username")
         user.discord_discriminator = user_data.get("discriminator")
@@ -68,7 +69,7 @@ def exchange_code(code: str) -> dict:
         "client_secret": settings.BOT_CLIENT_SECRET,
         "grant_type": "authorization_code",
         "code": code,
-        "redirect_uri": f"http://{settings.HOST_DNS}{reverse('auth_redirect')}",
+        "redirect_uri": f"{settings.HOST_DNS}{reverse('auth_redirect')}",
         "scope": "identify",
     }
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
