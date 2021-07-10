@@ -1,6 +1,7 @@
 import requests
 
 from django.http import HttpRequest
+from django.db.models import ObjectDoesNotExist
 from django.shortcuts import redirect, render
 from django.conf import settings
 from django.db import IntegrityError
@@ -34,7 +35,11 @@ def discord_login_redirect(request: HttpRequest):
         user.is_bot = user_data.get("bot", False)
         user.discord_avatar = user_data.get("avatar")
 
-        temp_user = User.objects.get(discord_id=int(user_data.get("id")))
+        try:
+            temp_user = User.objects.get(discord_id=int(user_data.get("id")))
+        except ObjectDoesNotExist:
+            temp_user = None
+
         backup_user = temp_user
 
         if is_temp_user(temp_user):
