@@ -4,11 +4,31 @@ from friendo_site.users.models import User, token_required
 
 user = ObjectType("User")
 
+watchlist_object = ObjectType("WatchList")
+
 
 def generate_user_auth_token(user=None):
     if user is None:
         raise ValueError("User cannot be None.")
     return user.generate_token()
+
+
+@watchlist_object.field("owners")
+def resolve_watchlist_owners_field(obj, _):
+    return obj.owners.all()
+
+
+@watchlist_object.field("titles")
+def resolve_watchlist_titles_field(obj, _):
+    return obj.watchlisttitle_set.all()
+
+
+@token_required
+def get_user_watchlists(_, info, data):
+    if discord_id := data.get("discord_id"):
+        return User.objects.get(discord_id=discord_id).watchlist_set.all()
+    else:
+        raise KeyError("discord_id missing or invalid.")
 
 
 @token_required
