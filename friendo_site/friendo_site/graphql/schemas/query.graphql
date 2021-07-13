@@ -1,3 +1,3 @@
 type Query {
-    allUsers(discord_id: BigInt): [User!]!
+    allUsers: [User!]!
 }
