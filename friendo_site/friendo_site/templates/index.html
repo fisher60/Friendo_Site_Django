@@ -1,30 +1,31 @@
 {% extends "base.html" %}
 
+
 {% block content %}
-        <div class="container">
-            <div class="row">
-                <div style="border-bottom: 10px solid white; border-radius: 10px; margin: 40px auto; padding: 20px; width: 400px; text-align: center">
-                    <h1 style="color: white; margin: 0 auto; padding: 20px;">Friendo Bot</h1>
-                </div>
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div style="border-bottom: 10px solid white; border-radius: 10px; margin: 40px auto; padding: 20px; width: 400px; text-align: center">
+                <h1 style="color: white; margin: 0 auto; padding: 20px;">Friendo Bot</h1>
             </div>
-
-            <div class="row justify-content-md-center">
-                <div class="column">
-                    <a href="https://discord.com/api/oauth2/authorize?client_id=742897218939387925&permissions=2147352305&scope=bot" target="_blank" type="button" class="btn btn-lg btn-outline-light" style="width: 250px;">Invite To Your Server</a>
-                </div>
-            </div>
-
-            <div class="row justify-content-md-center">
-                <div class="column">
-                    <a href="{% url 'graphql' %}" target="_blank" type="button" class="btn btn-lg btn-outline-light" style="width: 200px; margin-top: 50px">API</a>
-                </div>
-            </div>
-
-            <div class="row justify-content-md-center">
-                <div class="column">
-                    <a href="https://github.com/fisher60/Friendo_Bot" target="_blank" type="button" class="btn btn-lg btn-outline-light" style="width: 150px; margin-top: 50px">Source</a>
-                </div>
-            </div>
-
         </div>
+
+        <div class="row justify-content-center">
+            <div class="column">
+                <a href="https://discord.com/api/oauth2/authorize?client_id=742897218939387925&permissions=2147352305&scope=bot" target="_blank" type="button" class="btn btn-lg btn-outline-light" style="width: 250px;">Invite To Your Server</a>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="column">
+                <a href="{% url 'graphql' %}" target="_blank" type="button" class="btn btn-lg btn-outline-light" style="width: 200px; margin-top: 50px">API</a>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="column">
+                <a href="https://github.com/fisher60/Friendo_Bot" target="_blank" type="button" class="btn btn-lg btn-outline-light" style="width: 150px; margin-top: 50px">Source</a>
+            </div>
+        </div>
+
+    </div>
 {% endblock content %}
