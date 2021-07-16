@@ -1,51 +1,51 @@
 <!DOCTYPE html>
 {% load static %}
-<html lang="en" style="width: 100%; height: 100%">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>Friendo Bot</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
 </head>
 <body>
-<div style="width: 100%; padding: 5px; text-align: right;">
-    {% if not user.is_authenticated %}
+    <div style="width: 100%; padding: 5px; text-align: right;">
+        {% if not user.is_authenticated %}
 
-        {% if request.path == "/users/login/" %}
-            <a href="{% url 'index' %}" type="button" class="btn btn-sm btn-outline-light" style="width: 85px;">Home</a>
+            {% if request.path == "/users/login/" %}
+                <a href="{% url 'index' %}" type="button" class="btn btn-outline-light" >Home</a>
+            {% else %}
+                <a href="{% url 'login' %}" type="button" class="btn btn-outline-light" >Login</a>
+            {% endif %}
+
+            <a href="{% url 'register' %}" type="button" class="btn btn-outline-light">Sign Up</a>
+
         {% else %}
-            <a href="{% url 'login' %}" type="button" class="btn btn-sm btn-outline-light" style="width: 85px;">Login</a>
+
+            {% if request.path == "/users/profile/" %}
+                <a href="{% url 'index' %}" type="button" class="btn btn-outline-light" ">Home</a>
+            {% else %}
+                <a href="{% url 'profile' %}" type="button" class="btn btn-outline-light" ">Profile</a>
+            {% endif %}
+
+            <a href="{% url 'logout' %}" type="button" class="btn btn-outline-light" ">Logout</a>
+
         {% endif %}
+    </div>
 
-        <a href="{% url 'register' %}" type="button" class="btn btn-sm btn-outline-light" style="width: 85px;">Sign Up</a>
-
-    {% else %}
-
-        {% if request.path == "/users/profile/" %}
-            <a href="{% url 'index' %}" type="button" class="btn btn-sm btn-outline-light" style="width: 85px;">Home</a>
-        {% else %}
-            <a href="{% url 'profile' %}" type="button" class="btn btn-sm btn-outline-light" style="width: 85px;">Profile</a>
-        {% endif %}
-
-        <a href="{% url 'logout' %}" type="button" class="btn btn-sm btn-outline-light" style="width: 85px;">Logout</a>
-
+    {% if messages %}
+    <div class="messages">
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
     {% endif %}
-</div>
 
-{% if messages %}
-<div class="messages">
-    <ul>
-        {% for message in messages %}
-            <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-</div>
-{% endif %}
+    {% block content %}
+    {% endblock content %}
 
- {% block content %}
- {% endblock content %}
-
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    </body>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+</body>
 </html>
