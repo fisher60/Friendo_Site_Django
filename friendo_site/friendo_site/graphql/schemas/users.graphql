@@ -45,3 +45,18 @@ type WatchList {
 input GetUserWatchListsInput {
     discord_id: BigInt!
 }
+
+input GetWatchListFromIdInput {
+    watch_list_id: Int!
+}
+
+input ModifyUserWatchListInput {
+    watch_list_id: ID!
+    change_name: String
+    remove_user: GetUserInput
+}
+
+input RemoveWatchListTitleInput {
+    watch_list: GetWatchListFromIdInput!
+    title_id: ID!
+}
