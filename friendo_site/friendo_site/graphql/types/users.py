@@ -29,6 +29,11 @@ def get_user_watchlist_from_id(_, info, data):
 
 
 @token_required
+def delete_user_watchlist_from_id(_, info, data):
+    return WatchList.objects.get(id=int(data.get("watch_list_id"))).delete()
+
+
+@token_required
 def get_user_watchlists(_, info, data):
     if discord_id := data.get("discord_id"):
         return User.objects.get(discord_id=discord_id).watchlist_set.all()
@@ -38,12 +43,13 @@ def get_user_watchlists(_, info, data):
 
 @token_required
 def modify_user_watchlist(_, info, data):
-    watchlist_id = data.get("id")
+    watchlist_id = data.get("watch_list_id")
     this_watch_list = WatchList.objects.get(id=watchlist_id)
     if change_name := data.get("change_name"):
         this_watch_list.name = change_name
+    this_watch_list.save()
 
-    return this_watch_list.save()
+    return this_watch_list
 
 
 @token_required
