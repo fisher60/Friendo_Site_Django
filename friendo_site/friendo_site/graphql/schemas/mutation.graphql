@@ -5,6 +5,7 @@ type Mutation {
     get_guild(data: GuildInput!): Guild
     modify_guild(data: GuildInput!): Guild
     get_user_watchlists(data: GetUserWatchListsInput!): [WatchList]
-    modify_user_watchlist(data: ModifyUserWatchListInput!): [WatchList]
+    modify_user_watchlist(data: ModifyUserWatchListInput!): WatchList
     get_watchlist_from_id(data: GetWatchListFromIdInput!): WatchList
+    delete_watchlist_from_id(data: GetWatchListFromIdInput!): Boolean
 }
