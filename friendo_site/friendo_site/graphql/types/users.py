@@ -29,8 +29,14 @@ def get_user_watchlist_from_id(_, info, data):
 
 
 @token_required
-def delete_user_watchlist_from_id(_, info, data):
-    return WatchList.objects.get(id=int(data.get("watch_list_id"))).delete()
+def delete_user_watchlist_from_id(_, info, data) -> bool:
+    """
+    Attempt to get and delete a WatchList entry.
+
+    Returns whether the number of deleted entries is greater than 0.
+    """
+    deleted_objects = WatchList.objects.get(id=int(data.get("watch_list_id"))).delete()
+    return deleted_objects[0] > 0
 
 
 @token_required
