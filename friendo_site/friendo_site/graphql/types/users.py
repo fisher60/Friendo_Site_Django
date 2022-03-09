@@ -2,7 +2,7 @@ from ariadne import ObjectType
 from django.contrib.auth import authenticate, login
 from friendo_site.users.models import User, token_required, WatchList
 
-user = ObjectType("User")
+user_type = ObjectType("User")
 
 watchlist_object = ObjectType("WatchList")
 
@@ -48,11 +48,26 @@ def get_user_watchlists(_, info, data):
 
 
 @token_required
+def create_user_watchlist(_, info, data):
+    watchlist_name = data.get("watchlist_name")
+    owner_discord_id = data.get("owner_discord_id")
+
+    owner = User.objects.get(discord_id=owner_discord_id)
+    new_watchlist = WatchList.objects.create(name=watchlist_name)
+    new_watchlist.save()
+    new_watchlist.owners.add(owner)
+
+    return new_watchlist
+
+
+@token_required
 def modify_user_watchlist(_, info, data):
     watchlist_id = data.get("watch_list_id")
     this_watch_list = WatchList.objects.get(id=watchlist_id)
     if change_name := data.get("change_name"):
         this_watch_list.name = change_name
+    if remove_user := data.get("remove_user_discord_id"):
+        this_watch_list.owners.remove(User.objects.get(discord_id=remove_user))
     this_watch_list.save()
 
     return this_watch_list
