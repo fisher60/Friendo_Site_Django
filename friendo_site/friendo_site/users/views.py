@@ -28,7 +28,7 @@ def discord_login_redirect(request: HttpRequest):
     user_data = exchange_code(code)
 
     try:
-        user = request.user
+        user = request.user_type
         user.discord_id = int(user_data.get("id"))
         user.discord_username = user_data.get("username")
         user.discord_discriminator = user_data.get("discriminator")
@@ -88,7 +88,7 @@ def exchange_code(code: str) -> dict:
 
 
 def register(request):
-    if not request.user.is_authenticated:
+    if not request.user_type.is_authenticated:
         if request.method == "POST":
             form = UserRegisterForm(request.POST)
 
@@ -105,7 +105,7 @@ def register(request):
 
 
 def login_view(request):
-    if not request.user.is_authenticated:
+    if not request.user_type.is_authenticated:
         username = request.POST.get("username", None)
         password = request.POST.get("password", None)
         user = authenticate(request, username=username, password=password)
@@ -123,7 +123,7 @@ def profile(request):
 
 
 def logout_view(request):
-    if request.user.is_authenticated:
+    if request.user_type.is_authenticated:
         logout(request)
         messages.success(request, "You have been logged out.")
     return redirect("index")
