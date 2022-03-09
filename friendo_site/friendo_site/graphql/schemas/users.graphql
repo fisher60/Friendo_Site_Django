@@ -36,7 +36,7 @@ type WatchListTitle {
 }
 
 type WatchList {
-    id: ID
+    id: ID!
     name: String!
     titles: [WatchListTitle]
     owners: [User!]!
@@ -50,10 +50,15 @@ input GetWatchListFromIdInput {
     watch_list_id: Int!
 }
 
+input CreateUserWatchListInput {
+    watchlist_name: String!
+    owner_discord_id: BigInt!
+}
+
 input ModifyUserWatchListInput {
     watch_list_id: ID!
     change_name: String
-    remove_user: GetUserInput
+    remove_user_discord_id: BigInt
 }
 
 input RemoveWatchListTitleInput {

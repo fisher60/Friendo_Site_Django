@@ -42,7 +42,7 @@ class User(AbstractUser):
 
 
 class WatchList(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
     owners = models.ManyToManyField(User)
 
     def __str__(self):
