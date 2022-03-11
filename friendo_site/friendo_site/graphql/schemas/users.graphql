@@ -5,7 +5,7 @@ type User{
     notes: [String!]
     discord_id: BigInt
     timezone_name: String
-    watch_lists: [WatchList]
+    watchlists: [WatchList]
 }
 
 input LoginInput {
@@ -14,8 +14,7 @@ input LoginInput {
 }
 
 input GetUserInput {
-    username: String
-    discord_id: BigInt
+    discord_id: BigInt!
 }
 
 input ModifyUserInput {
@@ -39,7 +38,8 @@ type WatchList {
     id: ID!
     name: String!
     titles: [WatchListTitle]
-    owners: [User!]!
+    owner: User!
+    maintainers: [User]
 }
 
 input GetUserWatchListsInput {
@@ -59,6 +59,7 @@ input ModifyUserWatchListInput {
     watch_list_id: ID!
     change_name: String
     remove_user_discord_id: BigInt
+    add_user_discord_id: BigInt
 }
 
 input RemoveWatchListTitleInput {
