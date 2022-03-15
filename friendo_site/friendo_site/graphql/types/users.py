@@ -1,15 +1,16 @@
 from typing import Optional
 
 from ariadne import ObjectType
+from ariadne.exceptions import HttpBadRequestError
 from django.contrib.auth import authenticate, login
-from friendo_site.users.models import User, token_required, WatchList
+from friendo_site.users.models import AuthToken, User, token_required, WatchList
 
 user_type = ObjectType("User")
 
 watchlist_object = ObjectType("WatchList")
 
 
-def generate_user_auth_token(user=None):
+def generate_user_auth_token(user: User = None) -> AuthToken:
     if user is None:
         raise ValueError("User cannot be None.")
     return user.generate_token()
@@ -30,22 +31,22 @@ def get_or_create_user_from_id(discord_id: int) -> User:
 
 
 @watchlist_object.field("maintainers")
-def resolve_watchlist_maintainers_field(obj, _):
+def resolve_watchlist_maintainers_field(obj: WatchList, _) -> list:
     return obj.maintainers.all()
 
 
 @watchlist_object.field("titles")
-def resolve_watchlist_titles_field(obj, _):
+def resolve_watchlist_titles_field(obj: WatchList, _) -> list:
     return obj.watchlisttitle_set.all()
 
 
-@user_type.field("watchlists")
-def resolve_watchlist(obj, _):
+@user_type.field("watch_lists")
+def resolve_watchlist(obj: User, _) -> list:
     return obj.owned_watchlists.all()
 
 
 @token_required
-def get_user_watchlist_from_id(_, info, data):
+def get_user_watchlist_from_id(_, info, data) -> WatchList:
     return WatchList.objects.get(id=int(data.get("watch_list_id")))
 
 
@@ -61,7 +62,7 @@ def delete_user_watchlist_from_id(_, info, data) -> bool:
 
 
 @token_required
-def get_user_watchlists(_, info, data):
+def get_user_watchlists(_, info, data) -> list:
     if discord_id := data.get("discord_id"):
         return User.objects.get(discord_id=discord_id).owned_watchlists.all()
     else:
@@ -69,9 +70,13 @@ def get_user_watchlists(_, info, data):
 
 
 @token_required
-def create_user_watchlist(_, info, data):
+def create_user_watchlist(_, info, data) -> WatchList:
     watchlist_name = data.get("watchlist_name")
     owner_discord_id = data.get("owner_discord_id")
+
+    if None in [watchlist_name, owner_discord_id]:
+        raise HttpBadRequestError("watchlist_name and owner_discord_id are both required to create a watchlist.")
+
     owner = get_or_create_user_from_id(owner_discord_id)
 
     new_watchlist = WatchList.objects.create(name=watchlist_name, owner=owner)
@@ -81,7 +86,7 @@ def create_user_watchlist(_, info, data):
 
 
 @token_required
-def modify_user_watchlist(_, info, data):
+def modify_user_watchlist(_, info, data) -> WatchList:
     watchlist_id = data.get("watch_list_id")
     this_watch_list = WatchList.objects.get(id=watchlist_id)
 
@@ -99,15 +104,15 @@ def modify_user_watchlist(_, info, data):
 
 
 @token_required
-def get_user(_, info, data):
+def get_user(_, info, data) -> User:
     if data["discord_id"]:
         return User.objects.get(discord_id=data["discord_id"])
     else:
-        raise KeyError("discord_id invalid or missing")
+        raise KeyError("discord_id was not provided")
 
 
 @token_required
-def modify_user(_, info, data):
+def modify_user(_, info, data) -> User:
     if discord_user_id := data.get("discord_id"):
         this_user = get_or_create_user_from_id(discord_user_id)
 
@@ -120,7 +125,7 @@ def modify_user(_, info, data):
         raise KeyError("discord_id is a required parameter.")
 
 
-def resolve_login(_, info, data):
+def resolve_login(_, info, data) -> dict:
     request = info.context["request"]
     user = authenticate(username=data["username"], password=data["password"])
 

@@ -5,7 +5,7 @@ type User{
     notes: [String!]
     discord_id: BigInt
     timezone_name: String
-    watchlists: [WatchList]
+    watch_lists: [WatchList]
 }
 
 input LoginInput {
