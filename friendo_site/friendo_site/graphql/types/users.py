@@ -22,6 +22,8 @@ def get_or_create_user_from_id(discord_id: int) -> User:
     )
 
     if user_was_created:
+        # Create a temporary user that is able to migrate to a Friendo account via the discord_login_redirect()
+        # Function in users.views
         this_user.username = f"temp_{discord_id}"
         this_user.set_unusable_password()
 
