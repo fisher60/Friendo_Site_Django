@@ -41,6 +41,26 @@ class User(AbstractUser):
         return AuthToken(user=self)
 
 
+class WatchList(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    owners = models.ManyToManyField(User)
+
+    def __str__(self):
+        return self.name[:15]
+
+
+class WatchListTitle(models.Model):
+    name = models.CharField(max_length=40)
+    watch_list = models.ForeignKey(WatchList, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{str(self.watch_list)} || {self.name[:15]}"
+
+    def save(self, *args, **kwargs):
+        self.name = self.name[:40]
+        super().save(*args, **kwargs)
+
+
 class Note(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.CharField(max_length=50)
@@ -51,7 +71,7 @@ class Note(models.Model):
 
 class Currency(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    amount = models.IntegerField(default=97)
+    amount = models.IntegerField(default=1)
 
     def __str__(self):
         return "Chad Bucks"

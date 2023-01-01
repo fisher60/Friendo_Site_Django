@@ -6,5 +6,5 @@ query = QueryType()
 
 @query.field("allUsers")
 @token_required
-def resolve_all_users(root, info):
+def resolve_all_users(*_):
     return User.objects.all()
