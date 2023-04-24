@@ -43,7 +43,8 @@ class User(AbstractUser):
 
 class WatchList(models.Model):
     name = models.CharField(max_length=50, unique=True)
-    owners = models.ManyToManyField(User)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owned_watchlists")
+    maintainers = models.ManyToManyField(User, related_name="maintained_watchlists")
 
     def __str__(self):
         return self.name[:15]

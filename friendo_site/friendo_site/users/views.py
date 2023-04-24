@@ -24,6 +24,12 @@ def is_temp_user(check_user: User) -> bool:
 
 @login_required
 def discord_login_redirect(request: HttpRequest):
+    """
+    Uses Discord OAuth to validate and link a user's Discord account to their Friendo account.
+
+    If a user has an existing temporary account, the data from that temporary account will be migrated to their Friendo
+    account based on the Discord user ID retrieved from the OAuth.
+    """
     code = request.GET.get("code")
     user_data = exchange_code(code)
 
