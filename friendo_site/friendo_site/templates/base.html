@@ -11,13 +11,17 @@
     <div style="width: 100%; padding: 5px; text-align: right;">
         {% if not user.is_authenticated %}
 
-            {% if request.path == "/users/login/" %}
+            {% if not request.path == "/" %}
                 <a href="{% url 'index' %}" type="button" class="btn btn-outline-light" >Home</a>
-            {% else %}
-                <a href="{% url 'login' %}" type="button" class="btn btn-outline-light" >Login</a>
             {% endif %}
 
+            {% if not request.path == "/users/login/" %}
+                <a href="{% url 'login' %}" type="button" class="btn btn-outline-light" >Login</a>
+            {% endif %}
+            
+            {% if not request.path == "/users/register/" %}
             <a href="{% url 'register' %}" type="button" class="btn btn-outline-light">Sign Up</a>
+            {% endif %}
 
         {% else %}
 
